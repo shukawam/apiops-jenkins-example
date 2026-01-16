@@ -27,10 +27,11 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
                     sh '''
+                        set -eu
                         $WORKSPACE/.bin/deck gateway validate \
                             --konnect-compatibility \
-                            --konnect-control-plane-name ${env.KONNECT_CONTROL_PLANE_NAME} \
-                            --konnect-token ${env.KONNECT_TOKEN} \
+                            --konnect-control-plane-name $KONNECT_CONTROL_PLANE_NAME \
+                            --konnect-token $KONNECT_TOKEN \
                             kong.yaml
                     '''
                 }
@@ -40,9 +41,10 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
                     sh '''
+                        set -eu
                         $WORKSPACE/.bin/deck gateway sync \
-                            --konnect-control-plane-name ${env.KONNECT_CONTROL_PLANE_NAME} \
-                            --konnect-token ${env.KONNECT_TOKEN} \
+                            --konnect-control-plane-name $KONNECT_CONTROL_PLANE_NAME \
+                            --konnect-token $KONNECT_TOKEN \
                             kong.yaml
                     '''
                 }
