@@ -8,3 +8,18 @@ services:
         paths:
           - /
         strip_path: true
+
+plugins:
+  - name: opentelemetry
+    config:
+      traces_endpoint: http://otel-collector:4318/v1/traces
+      logs_endpoint: http://otel-collector:4318/v1/logs
+      access_logs_endpoint: http://otel-collector:4318/v1/logs
+      metrics:
+        endpoint: http://otel-collector:4318/v1/metrics
+        push_interval: 20
+        enable_bandwidth_metrics: true
+        enable_latency_metrics: true
+        enable_request_metrics: true
+        enable_upstream_health_metrics: true
+        enable_consumer_attribute: true

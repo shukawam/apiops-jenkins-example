@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         KONNECT_CONTROL_PLANE_NAME = 'local-gateway'
+        PATH = "${env.WORKSPACE}/.bin:${env.PATH}"
     }
 
     stages {
@@ -14,12 +15,12 @@ pipeline {
         stage('setup deck') {
             steps {
                 sh '''
-                    set -euo pipefail
+                    set -eu
                     mkdir -p $WORKSPACE/.bin
                     curl -sL https://github.com/kong/deck/releases/download/v1.55.0/deck_1.55.0_linux_amd64.tar.gz -o deck.tar.gz
                     tar -xf deck.tar.gz -C $WORKSPACE/.bin
                     chmod +x $WORKSPACE/.bin/deck
-                    $WORKSPACE/.bin/deck version
+                    deck version
                 '''
             }
         }
@@ -28,7 +29,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
                     sh '''
                         set -eu
-                        $WORKSPACE/.bin/deck gateway validate \
+                        deck gateway validate \
                             --konnect-compatibility \
                             --konnect-control-plane-name $KONNECT_CONTROL_PLANE_NAME \
                             --konnect-token $KONNECT_TOKEN \
@@ -42,7 +43,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
                     sh '''
                         set -eu
-                        $WORKSPACE/.bin/deck gateway sync \
+                        deck gateway sync \
                             --konnect-control-plane-name $KONNECT_CONTROL_PLANE_NAME \
                             --konnect-token $KONNECT_TOKEN \
                             kong.yaml
