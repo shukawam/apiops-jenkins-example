@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         KONNECT_CONTROL_PLANE_NAME = 'local-gateway'
-        KONNECT_TOKEN = credentials('KONNECT_TOKEN')
+        DECK_IMAGE = 'kong/deck:v1.55.0'
     }
 
     stages {
@@ -19,12 +19,24 @@ pipeline {
         }
         stage('Validate kong state') {
             steps {
-                sh 'deck gateway validate --konnect-compatibility --konnect-control-plane-name ${KONNECT_CONTROL_PLANE_NAME} --konnect-token ${KONNECT_TOKEN} kong.yaml'
+                withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
+                    script {
+                        docker.image(env.DECK_IMAGE).inside {
+                            sh 'deck gateway validate --konnect-compatibility --konnect-control-plane-name ${env.KONNECT_CONTROL_PLANE_NAME} --konnect-token ${env.KONNECT_TOKEN} kong.yaml'
+                        }
+                    }
+                }
             }
         }
         stage('Sync gateway settings') {
             steps {
-                sh 'deck gateway sync --konnect-control-plane-name ${KONNECT_CONTROL_PLANE_NAME} --konnect-token ${KONNECT_TOKEN} kong.yaml'
+                withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
+                    script {
+                        docker.image(env.DECK_IMAGE).inside {
+                            sh 'deck gateway sync --konnect-control-plane-name ${env.KONNECT_CONTROL_PLANE_NAME} --konnect-token ${env.KONNECT_TOKEN} kong.yaml'
+                        }
+                    }
+                }
             }
         }
     }
