@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'kong/deck:v1.55.0'
-            reuseNode true
-        }
-    }
+    agent any
 
     environment {
         KONNECT_CONTROL_PLANE_NAME = 'local-gateway'
