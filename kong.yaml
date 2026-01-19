@@ -8,6 +8,10 @@ services:
         paths:
           - /
         strip_path: true
+      - name: echo-route
+        paths:
+          - /echo
+        strip_path: true
 
 plugins:
   - name: opentelemetry
