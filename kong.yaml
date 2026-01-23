@@ -20,6 +20,10 @@ services:
         paths:
           - /demo
         strip_path: true
+      - name: v1-route
+        paths:
+          - /v1
+        strip_path: true
 
 plugins:
   - name: opentelemetry
