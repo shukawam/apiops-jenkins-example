@@ -12,7 +12,7 @@ pipeline {
                 checkout scm
             }
         }
-        stage('setup deck') {
+        stage('Setup deck') {
             steps {
                 sh '''
                     set -eu
@@ -25,6 +25,19 @@ pipeline {
             }
         }
         stage('Validate kong state') {
+            steps {
+                withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
+                    sh '''
+                        set -eu
+                        deck gateway diff \
+                            --konnect-control-plane-name $KONNECT_CONTROL_PLANE_NAME \
+                            --konnect-token $KONNECT_TOKEN \
+                            kong.yaml
+                    '''
+                }
+            }
+        }
+        stage('Diff current environment') {
             steps {
                 withCredentials([string(credentialsId: 'KONNECT_TOKEN', variable: 'KONNECT_TOKEN')]) {
                     sh '''
