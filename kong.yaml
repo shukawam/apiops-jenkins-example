@@ -16,6 +16,10 @@ services:
         paths:
           - /mock
         strip_path: true
+      - name: demo-route
+        paths:
+          - /demo
+        strip_path: true
 
 plugins:
   - name: opentelemetry
