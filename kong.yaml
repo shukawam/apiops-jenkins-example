@@ -12,6 +12,10 @@ services:
         paths:
           - /echo
         strip_path: true
+      - name: mock-route
+        paths:
+          - /mock
+        strip_path: true
 
 plugins:
   - name: opentelemetry
